@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+# chkconfig: 35 95 05
+# description: Controls Bash scripts for near-realtime backup of changed files to the Cloud using rclone
+#
+# Get function from functions library
+. /etc/init.d/functions
+
+# Start the service rcloned
+start() {
+        logger "Starting rcloned: "
+	/usr/local/sbin/rclonedWatcher &
+	/usr/local/sbin/rclonedProcessor &
+        ### Create the lock file ###
+        touch /var/lock/subsys/rcloned
+        logger $"SUCCESS"
+        echo
+}
+# Stop the service rcloned
+stop() {
+        logger "Stopping rcloned: "
+        killall inotifywait >/dev/null
+	killall rclonedWatcher >/dev/null
+	killall rclonedProcessor >/dev/null
+        ### Now, delete the lock file ###
+        rm -f /var/lock/subsys/rcloned
+	success $"SUCCESS"
+        echo
+}
+
+### main logic ###
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status rclonedWatcher
+	status rclonedProcessor
+	status inotifywait
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0

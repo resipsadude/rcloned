@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if /usr/local/sbin/rcloned status | grep stopped
+	then
+		echo "Restarting rcloned..."
+		out="/usr/local/sbin/rcloned restart"
+                eval $out
+	else
+   		echo "Rcloned is running..."
+fi

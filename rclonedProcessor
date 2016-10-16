@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Make sure we avoid running multiple instances of this script
+
+LOCKFILE="/var/lock/`basename $0`"
+LOCKFD=99
+
+# PRIVATE
+_lock()             { flock -$1 $LOCKFD; }
+_no_more_locking()  { _lock u; _lock xn && rm -f $LOCKFILE; }
+_prepare_locking()  { eval "exec $LOCKFD>\"$LOCKFILE\""; trap _no_more_locking EXIT; }
+
+# ON START
+_prepare_locking
+
+# PUBLIC
+exlock_now()        { _lock xn; }  # obtain an exclusive lock immediately or fail
+exlock()            { _lock x; }   # obtain an exclusive lock
+shlock()            { _lock s; }   # obtain a shared lock
+unlock()            { _lock u; }   # drop a lock
+
+# CHECK
+exlock_now || exit 1
+
+# PROGRAM
+logfile="/var/log/rcloned.log"
+pipe="/tmp/rcloned"
+touch $pipe
+
+### Set initial time of $pipe
+LTIME=`stat -c %Z "$pipe"`
+
+while true    
+do
+	ATIME=`stat -c %Z "$pipe"`
+
+	if [[ "$ATIME" != "$LTIME" ]]
+		then 
+		
+			echo "Processing $pipe"
+			LTIME=$ATIME
+			
+			readarray -t myArray < $pipe
+			
+			# Remove any duplicate line
+			eval uniqueArray=($(printf "%q\n" "${myArray[@]}" | sort -u))
+
+			for i in "${uniqueArray[@]}"
+				do
+					if [ "$i" = "" ]; then continue; fi
+					
+					out="/usr/local/sbin/rclone copy --bwlimit=1M $i"
+					echo "$out"
+					touch $logfile; echo "`date` - rclonedProcessor: $out" >> $logfile
+					eval "$out >> $logfile 2>&1"
+					
+					#Remove processed file from pipe
+					perl -p -i -e "s|$i||s" $pipe
+					
+					#Remove any blank lines (in case we messed up somehow)
+					perl -p -i -e 's|^\n||s' $pipe
+					
+				done
+
+	fi
+
+	sleep 15
+
+done
