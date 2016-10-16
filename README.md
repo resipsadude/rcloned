@@ -19,3 +19,6 @@ I use 2 cron jobs. The first one runs every minute and thereby starts rclonedWat
 
 0 0 * * * folders=("/Folder 1/" "/Folder 2/"); for i in "${folders[@]}"; do [ -d "/dataEncrypted$i" ] && (pgrep rclone || /usr/local/sbin/rclone sync --bwlimit=1M "/dataEncrypted$i" "acd:$i"); done;
 ```
+
+# Mirroring (Not A Backup)
+Remember that this is NOT a backup program.  It simply mirrors your local data to the Cloud.  You still need backups.  Why?  Imagine you're working on your 100-page thesis which took you months to create and which gets corrupted while saving locally for whatever reason, that corrupted file is then mirrored by rcloned to your Cloud.
