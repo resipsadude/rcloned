@@ -1,5 +1,5 @@
 # rcloned
-Bash scripts for near-realtime uploading of changed files using rclone to the Cloud for backup
+Bash scripts for near real-time mirroring of your data to the Cloud using rclone
 
 # Description
 I'm not much of a programmer but this works for my needs as all I have is a small office. I hacked some Bash code together with pretty much toothpaste and duct tape and did not comment it that well at all.
