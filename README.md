@@ -1,5 +1,5 @@
 # rcloned
-Bash scripts for near real-time mirroring of your data to the Cloud using rclone
+Bash scripts for near real-time mirroring of your data to the Cloud using rclone (https://github.com/ncw/rclone)
 
 # Description
 I'm not much of a programmer but this works for my needs as all I have is a small office. I hacked some Bash code together with pretty much toothpaste and duct tape and did not comment it that well at all.
