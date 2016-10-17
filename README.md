@@ -17,7 +17,7 @@ I use 2 cron jobs. The first one runs every minute and thereby starts rclonedWat
 ```
 * * * * * /usr/local/sbin/rclonedUptime
 
-0 0 * * * folders=("/Folder 1/" "/Folder 2/"); for i in "${folders[@]}"; do [ -d "/dataEncrypted$i" ] && (pgrep rclone || /usr/local/sbin/rclone sync --bwlimit=1M "/dataEncrypted$i" "acd:$i"); done;
+0 0 * * * folders=("/Folder 1/" "/Folder 2/"); for i in "${folders[@]}"; do [ -d "/dataEncrypted$i" ] && (pgrep "rclone sync" || /usr/local/sbin/rclone sync --bwlimit=1M "/dataEncrypted$i" "acd:$i"); done;
 ```
 
 # Mirroring (Not A Backup)
