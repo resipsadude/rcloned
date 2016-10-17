@@ -21,4 +21,4 @@ I use 2 cron jobs. The first one runs every minute and thereby starts rclonedWat
 ```
 
 # Mirroring (Not A Backup)
-Remember that this is NOT a backup program.  It simply mirrors your local data to the Cloud.  You still need backups.  Why?  Imagine you're working on your 100-page thesis which took you months to create and which gets corrupted while saving locally for whatever reason, that corrupted file is then mirrored by rcloned to your Cloud.
+Remember that this is NOT a backup program.  It simply mirrors your local data to the Cloud.  You still need backups.  I recommend taking snapshots of your data (and storing them on AT LEAST one different physical device as your main data) so you can go back in time and recover your files as they existed in the past.  Why?  Imagine you're working on your 100-page thesis which took you 6 months to create and which gets corrupted while saving locally for whatever reason, that corrupted file is then mirrored by rcloned to your Cloud.  Congratulations, you now you have two perfect copies of a corrupt file.
