@@ -14,7 +14,7 @@ There are two Bash scripts that do all the work: rclonedWatcher looks for any wr
 
 I use 2 cron jobs. The first one runs every minute and thereby starts rclonedWatcher and rclonedProcessor and checks to ensure all processes are running, and will restart all processess if any processs crashes. The last one runs every night at midnight to fix anything missed by the rclonedWatcher and rclonedProcessor. And since I only have rclonedWatcher looking for writes (and nothing else), the last cron job also takes care of file deletions, filename changes, file moves, etc.
 
-We also need to create a symlink specific to our midnight cron job as we can't use "-f" with pgrep in a crontab as it will match against "sh".  So I did "ln -s /etc/local/sbin/rclone /etc/local/sbin/rcloneNightly".  Now we can use pgrep with "rcloneNightly". 
+We also need to create a symlink specific to our midnight cron job as we can't use "-f" with pgrep in a crontab as it will match against "sh" which runs the cronjob.  So I did "ln -s /etc/local/sbin/rclone /etc/local/sbin/rcloneNightly".  Now we can use pgrep with "rcloneNightly". 
 
 ```
 * * * * * /usr/local/sbin/rclonedUptime
