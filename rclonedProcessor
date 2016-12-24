@@ -38,7 +38,7 @@ do
 			echo "Processing $pipe"
 			
 			#Remove any blank lines (in case we messed up somehow)
-			perl -p -i -e 's|^\n||g' $pipe
+			perl -p -i -e 's|^\s*\n||g' $pipe
 			
 			readarray -t myArray < $pipe
 			
