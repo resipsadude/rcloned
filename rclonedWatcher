@@ -47,13 +47,17 @@ eval "$io" |
         echo "date='$date' time='$time' dir='$dir' file='$file'";
         local="\"$dir$file\""
 		
-		# break from loop if '$' is in the filename
-		if [[ $local == *'$'* ]]; then break; else echo '$ in filename, exiting...'; fi;
+		# Escape '$' in local path/filename, YMMV
+		localEscaped=$(echo ${local} | sed 's|\$|\\$|g');
+		
+		# If escaping '$' does not work
+		#if [[ $local == *'$'* ]]; then break; else echo '\'$\' in filename not escaped, exiting...'; fi;
 		
         remote="$(echo $dir | perl -p -i -e "s|^$excludedPathOnRemote||g")"
         remote="\"$remoteRclonePath$remote\""
+		
 		# Ony add to queue if it's not already in the queue
-        grep -q "$local $remote" "$pipe" || ( echo "$local $remote" >> "$pipe"; echo "`date` - rclonedWatcher: $local $remote" >> "$logfile" )
+        grep -q "$localEscaped $remote" "$pipe" || ( echo "$localEscaped $remote" >> "$pipe"; echo "`date` - rclonedWatcher: $local $remote" >> "$logfile" )
     done;
 
 exit;
