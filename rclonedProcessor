@@ -37,6 +37,9 @@ do
 		
 			echo "Processing $pipe"
 			
+			#Remove any blank lines (in case we messed up somehow)
+			perl -p -i -e 's|^\n||g' $pipe
+			
 			readarray -t myArray < $pipe
 			
 			# Remove any duplicate lines
@@ -49,13 +52,12 @@ do
 					out="/usr/local/sbin/rclone copy --bwlimit=1M $i"
 					echo "$out"
 					echo "`date` - rclonedProcessor: $out" >> $logfile
-					eval "$out >> $logfile 2>&1"
-					
+
 					#Remove processed file from pipe (no regex with \Q \E)
 					perl -p -i -e "s|\Q$i\E||g" $pipe
-					
-					#Remove any blank lines (in case we messed up somehow)
-					perl -p -i -e 's|^\n||g' $pipe
+
+					# Run rclone
+					eval "$out >> $logfile 2>&1"
 					
 				done
 
