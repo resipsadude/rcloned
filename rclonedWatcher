@@ -42,9 +42,8 @@ echo "Watching: $localDirectory";
 io="inotifywait -m -r -e close_write --exclude '(/~|\.tmp|\.bak|\.TMP|\.BAK)' --timefmt '%d/%m/%y|%H:%M:%S' --format '%T|%w|%f' $localDirectory"
 echo "Executing: $io";
 
-eval "$io"
-
-    	while read "date" "time" "dir" "file"; do
+eval "$io" |
+    while read "date" "time" "dir" "file"; do
 	
 		echo "date='$date' time='$time' dir='$dir' file='$file'";
 
