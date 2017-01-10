@@ -42,22 +42,27 @@ echo "Watching: $localDirectory";
 io="inotifywait -m -r -e close_write --exclude '(/~|\.tmp|\.bak|\.TMP|\.BAK)' --timefmt '%d/%m/%y|%H:%M:%S' --format '%T|%w|%f' $localDirectory"
 echo "Executing: $io";
 
-eval "$io" |
-    while read "date" "time" "dir" "file"; do
-        echo "date='$date' time='$time' dir='$dir' file='$file'";
-        local="\"$dir$file\""
-		
-		# Escape '$' in local path/filename, YMMV
+eval "$io"
+
+    	while read "date" "time" "dir" "file"; do
+	
+		echo "date='$date' time='$time' dir='$dir' file='$file'";
+
+		local="\"$dir$file\""
+
+		# Escape '$' in local & remote path/filename, YMMV
 		localEscaped=$(echo ${local} | sed 's|\$|\\$|g');
-		
-		# If escaping '$' does not work
-		#if [[ $local == *'$'* ]]; then break; else echo '\'$\' in filename not escaped, exiting...'; fi;
-		
-        remote="$(echo $dir | perl -p -i -e "s|^$excludedPathOnRemote||g")"
-        remote="\"$remoteRclonePath$remote\""
-		
+
+		remote="$(echo $dir | perl -p -i -e "s|^$excludedPathOnRemote||g")"
+		remote="\"$remoteRclonePath$remote\""
+
+		# Escape '$' in remote path, YMMV
+		remoteEscaped=$(echo ${remote} | sed 's|\$|\\$|g');
+
 		# Ony add to queue if it's not already in the queue
-        grep -q "$localEscaped $remote" "$pipe" || ( echo "$localEscaped $remote" >> "$pipe"; echo "`date` - rclonedWatcher: $local $remote" >> "$logfile" )
-    done;
+		grep -
+		q "$localEscaped $remoteEscaped" "$pipe" || ( echo "$localEscaped $remoteEscaped" >> "$pipe"; echo "`date` - rclonedWatcher: $local $remote" >> "$logfile" )
+    
+	done;
 
 exit;
